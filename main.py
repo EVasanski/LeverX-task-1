@@ -5,6 +5,7 @@ from xml.dom.minidom import parseString
 
 
 def parse():
+    """ Returns arguments passed to the command line """
     parser = argparse.ArgumentParser(description='List of students living in each room.')
     parser.add_argument('students', type=str, help='Path to the students file')
     parser.add_argument('rooms', type=str, help='Path to the rooms file')
@@ -14,6 +15,7 @@ def parse():
 
 
 def reed_files(stud_file, room_file):
+    """ Returns the contents of the input files """
     with open(stud_file, 'r') as file:
         students = json.load(file)
     with open(room_file, 'r') as file:
@@ -22,6 +24,7 @@ def reed_files(stud_file, room_file):
 
 
 def merge(students, rooms):
+    """ Merge the list of rooms and students by room number and returns the final list """
     students = sorted(students, key=lambda x: x['room'])
     room_num = 0
     for student in students:
@@ -34,6 +37,7 @@ def merge(students, rooms):
 
 
 def write_file(data, extension):
+    """ Writes the final list to a file, depending on the extension """
     if extension == 'JSON':
         with open('result.json', 'w') as file:
             json.dump(data, file, indent=3)
