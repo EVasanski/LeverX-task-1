@@ -1,5 +1,7 @@
 import argparse
 import json
+import sys
+
 from dicttoxml import dicttoxml
 from xml.dom.minidom import parseString
 
@@ -14,13 +16,17 @@ def parse():
     return args
 
 
-def reed_files(stud_file, room_file):
+def reed_json_files(*directories):
     """ Returns the contents of the input files """
-    with open(stud_file, 'r') as file:
-        students = json.load(file)
-    with open(room_file, 'r') as file:
-        rooms = json.load(file)
-    return students, rooms
+    data = list()
+    for directory in directories:
+        try:
+            with open(directory, 'r') as file:
+                data.append(json.load(file))
+        except FileNotFoundError:
+            print('Error: file {} can not be found!'.format(directory))
+            sys.exit()
+    return data
 
 
 def merge(students, rooms):
@@ -49,7 +55,7 @@ def write_file(data, extension):
 
 def main():
     args = parse()
-    students, rooms = reed_files(args.students, args.rooms)
+    students, rooms = reed_json_files(args.students, args.rooms)
     data = merge(students, rooms)
     write_file(data, args.format)
 
